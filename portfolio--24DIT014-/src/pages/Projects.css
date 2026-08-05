@@ -1,0 +1,20 @@
+.projects-page { padding: 20px; }
+.projects-page h2 { margin-bottom: 12px }
+
+.projects-controls { display:flex; gap:12px; align-items:center; margin-bottom:18px }
+.search-input {
+  flex:1; max-width:520px; padding:10px 12px; border-radius:8px; border:1px solid #e6eef8; box-shadow:inset 0 1px 0 rgba(0,0,0,0.02);
+}
+.btn-refresh { padding:8px 12px; border-radius:8px; background:#0f172a; color:#fff; border:none; cursor:pointer }
+.btn-refresh:hover { opacity:0.95 }
+
+.projects-stats { display:flex; gap:18px; margin-bottom:12px; align-items:center }
+.stat-item { background:#f8fafc; padding:8px 12px; border-radius:8px; color:#0f172a; box-shadow: 0 2px 8px rgba(15,23,42,0.03) }
+
+.repos-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px }
+.no-results { padding:20px; color:#475569 }
+
+@media (max-width:600px) {
+  .projects-controls { flex-direction:column; align-items:stretch }
+  .btn-refresh { width:100% }
+}
