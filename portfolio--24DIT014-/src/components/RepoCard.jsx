@@ -1,4 +1,3 @@
-import React from 'react'
 import './RepoCard.css'
 
 // Card showing repository details

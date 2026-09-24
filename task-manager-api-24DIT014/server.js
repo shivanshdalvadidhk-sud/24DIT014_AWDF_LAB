@@ -14,6 +14,7 @@ mongoose
     });
 
 
+const cors = require("cors");
 const logger = require("./middleware/logger");
 
 const taskRoutes = require("./routes/taskRoutes");
@@ -27,6 +28,9 @@ const errorHandler = require("./middleware/errorHandler");
 const app = express();
 
 const PORT = process.env.PORT || 5000;
+
+// Enable CORS for frontend integration
+app.use(cors());
 
 // Middleware
 app.use(express.json());
@@ -53,3 +57,4 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+

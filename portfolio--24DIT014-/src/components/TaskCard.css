@@ -1,0 +1,200 @@
+﻿.task-card {
+  background: var(--card-bg, #1e293b);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+  transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.task-card:hover {
+  border-color: #475569;
+}
+
+.task-card.task-completed {
+  opacity: 0.7;
+  border-left: 4px solid #10b981;
+}
+
+.task-card.task-completed .task-title {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.task-card.task-optimistic {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.task-checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.task-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.task-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  word-break: break-word;
+}
+
+.priority-badge {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+
+.priority-low {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.priority-medium {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.priority-high {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.task-description {
+  margin: 6px 0 12px 28px;
+  font-size: 0.92rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.task-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-task-action {
+  background: transparent;
+  border: 1px solid #475569;
+  color: #cbd5e1;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-task-edit:hover {
+  background: #334155;
+  color: #60a5fa;
+  border-color: #60a5fa;
+}
+
+.btn-task-delete:hover {
+  background: #334155;
+  color: #f87171;
+  border-color: #f87171;
+}
+
+/* Edit form inline styles */
+.task-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-input-title,
+.edit-input-desc,
+.edit-select-priority {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.edit-input-desc {
+  resize: vertical;
+}
+
+.edit-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.edit-select-priority {
+  width: auto;
+  cursor: pointer;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-cancel,
+.btn-save {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+
+.btn-cancel {
+  background: #475569;
+  color: #f1f5f9;
+}
+
+.btn-save {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-cancel:hover,
+.btn-save:hover {
+  opacity: 0.9;
+}

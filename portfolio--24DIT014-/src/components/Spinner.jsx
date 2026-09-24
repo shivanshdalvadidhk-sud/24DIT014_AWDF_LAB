@@ -1,12 +1,11 @@
-import React from 'react'
 import './Spinner.css'
 
 // Simple centered spinner with message
-export default function Spinner() {
+export default function Spinner({ message = 'Loading...' }) {
   return (
     <div className="spinner-wrap" role="status" aria-live="polite">
       <div className="spinner" />
-      <div className="spinner-text">Loading repositories...</div>
+      <div className="spinner-text">{message}</div>
     </div>
   )
 }

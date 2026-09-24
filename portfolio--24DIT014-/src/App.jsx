@@ -34,7 +34,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home summary={summary} skillList={skillList} />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/tasks" element={<Projects initialTab="tasks" />} />
+        <Route path="/projects" element={<Projects initialTab="tasks" />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

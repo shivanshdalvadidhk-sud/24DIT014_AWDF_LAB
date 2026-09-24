@@ -10,6 +10,11 @@ function NavBar() {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/tasks" className={({ isActive }) => (isActive ? 'nav-button active' : 'nav-button')}>
+            Tasks
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/projects" className={({ isActive }) => (isActive ? 'nav-button active' : 'nav-button')}>
             Projects
           </NavLink>
