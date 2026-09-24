@@ -2,25 +2,29 @@ const express = require("express");
 
 const router = express.Router();
 
+const validateTaskId = require("../middleware/validateTaskId");
+
 const {
     getAllTasks,
+    getTaskById,
     createTask,
     updateTask,
     deleteTask
 } = require("../controllers/taskController");
 
-const validateTaskId = require("../middleware/validateTaskId");
-
-// GET
+// GET all tasks
 router.get("/", getAllTasks);
 
-// POST
+// GET task by ID
+router.get("/:id", validateTaskId, getTaskById);
+
+// POST new task
 router.post("/", createTask);
 
-// PUT
+// PUT update task
 router.put("/:id", validateTaskId, updateTask);
 
-// DELETE
+// DELETE task
 router.delete("/:id", validateTaskId, deleteTask);
 
 module.exports = router;

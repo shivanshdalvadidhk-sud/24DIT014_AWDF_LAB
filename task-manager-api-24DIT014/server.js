@@ -1,4 +1,18 @@
+require("dotenv").config();
+
+const mongoose = require("mongoose");
+
 const express = require("express");
+
+mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log("MongoDB Connected");
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+
 
 const logger = require("./middleware/logger");
 
@@ -12,7 +26,7 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());

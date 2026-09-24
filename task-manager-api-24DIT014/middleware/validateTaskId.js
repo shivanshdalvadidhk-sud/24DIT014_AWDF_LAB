@@ -1,14 +1,12 @@
-const tasks = require("../data/tasks");
+const mongoose = require("mongoose");
 
 const validateTaskId = (req, res, next) => {
+    const { id } = req.params;
 
-    const id = Number(req.params.id);
-
-    const task = tasks.find(task => task.id === id);
-
-    if (!task) {
-        return res.status(404).json({
-            message: "Task not found"
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid task ID format"
         });
     }
 
