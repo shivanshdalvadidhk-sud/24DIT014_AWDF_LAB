@@ -3,7 +3,10 @@ const Task = require("../models/Task");
 // GET /tasks
 const getAllTasks = async (req, res, next) => {
     try {
-        const tasks = await Task.find().sort({ createdAt: -1 });
+        const filter = req.user && req.user.id
+            ? { $or: [{ user: req.user.id }, { user: null }, { user: { $exists: false } }] }
+            : {};
+        const tasks = await Task.find(filter).sort({ createdAt: -1 });
 
         res.status(200).json(tasks);
     } catch (err) {
@@ -13,19 +16,17 @@ const getAllTasks = async (req, res, next) => {
 
 // POST /tasks
 const createTask = async (req, res, next) => {
-
     try {
-
-        const task = await Task.create(req.body);
+        const taskData = { ...req.body };
+        if (req.user && req.user.id) {
+            taskData.user = req.user.id;
+        }
+        const task = await Task.create(taskData);
 
         res.status(201).json(task);
-
     } catch (err) {
-
         next(err);
-
     }
-
 };
 
 // PUT /tasks/:id
@@ -40,7 +41,7 @@ const updateTask = async (req, res, next) => {
             req.body,
 
             {
-                new: true,
+                returnDocument: 'after',
                 runValidators: true
             }
 

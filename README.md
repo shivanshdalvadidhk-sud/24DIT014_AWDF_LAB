@@ -8,14 +8,14 @@
 
 ## Repository Structure
 
-This monorepo is structured into two main applications, cleanly separating the frontend and backend:
+This monorepo is structured into two main applications, cleanly separating frontend and backend:
 
 ```
 24DIT014_AWDF_LAB/
 │
 ├── portfolio--24DIT014-/               # Frontend: React + Vite Single Page Application
 │   ├── src/
-│   │   ├── api.js                      # Central API service connecting to backend (Practical 6)
+│   │   ├── api.js                      # Central API service with JWT auth headers (Practicals 6 & 7)
 │   │   ├── components/
 │   │   │   ├── Header.jsx              # Reusable Header with name and theme prop (Practical 1)
 │   │   │   ├── About.jsx               # Bio / summary component (Practical 1)
@@ -28,10 +28,11 @@ This monorepo is structured into two main applications, cleanly separating the f
 │   │   │   ├── TaskCard.jsx & .css     # Task item card with edit, toggle, delete (Practical 6)
 │   │   │   ├── TaskForm.jsx & .css     # Task creation form (Practical 6)
 │   │   │   ├── Toast.jsx & .css        # Toast notifications for API actions (Practical 6)
-│   │   │   └── ConfirmModal.jsx & .css # Delete confirmation modal dialog (Practical 6)
+│   │   │   ├── ConfirmModal.jsx & .css # Delete confirmation modal dialog (Practical 6)
+│   │   │   └── AuthModal.jsx & .css    # JWT Sign In & Register modal (Practical 7)
 │   │   ├── pages/
 │   │   │   ├── Home.jsx                # Portfolio home page with composed components (Practical 1 & 2)
-│   │   │   ├── Projects.jsx & .css     # Task Management UI (Practical 6) + GitHub Repos (Practical 3)
+│   │   │   ├── Projects.jsx & .css     # Full-Stack Task Manager (Practicals 6 & 7) + GitHub Repos (Practical 3)
 │   │   │   ├── Contact.jsx             # Controlled form with live character count (Practical 2)
 │   │   │   └── NotFound.jsx            # 404 custom error route (Practical 2)
 │   │   ├── App.jsx                     # Route definitions & global theme state (Practical 2)
@@ -41,19 +42,24 @@ This monorepo is structured into two main applications, cleanly separating the f
 │
 └── task-manager-api-24DIT014/          # Backend: Node.js + Express + MongoDB REST API
     ├── controllers/
+    │   ├── authController.js           # Register, login, and /me controllers (Practical 7)
     │   └── taskController.js           # CRUD controllers using Mongoose model (Practical 4 & 5)
     ├── models/
-    │   └── Task.js                     # Mongoose schema with validation & hooks (Practical 5)
+    │   ├── User.js                     # User schema with hashed password (Practical 7)
+    │   └── Task.js                     # Task schema with validation & hooks (Practical 5)
     ├── routes/
-    │   └── taskRoutes.js               # REST routes with parameter validators (Practical 4 & 5)
+    │   ├── authRoutes.js               # Auth routes: /register, /login, /me (Practical 7)
+    │   └── taskRoutes.js               # Protected task routes with middleware (Practical 4, 5, 7)
     ├── middleware/
+    │   ├── auth.js                     # JWT verification middleware (Practical 7)
+    │   ├── validateTaskInput.js        # Server-side input validation middleware (Practical 7)
     │   ├── logger.js                   # Request logging middleware (Practical 4)
     │   ├── validateJson.js             # Content-Type: application/json validator (Practical 4)
     │   ├── validateTaskId.js           # ObjectId format validator (Practical 4 & 5)
     │   ├── notFound.js                 # Structured 404 handler for unknown routes (Practical 4)
     │   └── errorHandler.js             # Centralized error handler for Mongoose/server errors (Practical 4 & 5)
     ├── .env.example                    # Template environment variables
-    ├── server.js                       # Express app entry point with CORS enabled (Practical 4, 5, 6)
+    ├── server.js                       # Express app with CORS & Auth enabled (Practical 4, 5, 6, 7)
     ├── package.json
     └── README.md
 ```
@@ -89,19 +95,28 @@ This monorepo is structured into two main applications, cleanly separating the f
 - Error handling catches `ValidationError` (400) and `CastError` (404).
 
 ### Practical 6: Full Stack Integration React + Node + MongoDB
-- Configured **CORS** on the Express backend (`npm install cors`, `app.use(cors())`).
+- Configured **CORS** on the Express backend (`cors()`).
 - Created central API service `src/api.js` in React frontend (`http://localhost:5000/tasks`).
 - Replaced GitHub API with real-time backend MongoDB task management.
-- Complete end-to-end CRUD flow:
-  - **Create**: Task creation form with title, description, and priority.
-  - **Read**: Fetch and display tasks with quick stats (Total, Pending, Completed).
-  - **Update**: Toggle completed checkbox or edit task details inline.
-  - **Delete**: Remove task from MongoDB.
+- Complete end-to-end CRUD flow (Create, Read, Update, Delete).
 - **Supplementary Implementations**:
-  - **Optimistic UI Update**: Tasks appear immediately in the UI before server confirmation and rollback on failure.
-  - **Delete Confirmation Modal**: Custom dialog prompts the user before deleting a task.
-  - **Toast Notifications**: Feedback messages for task creation, update, deletion, and errors.
-  - **Persistence**: All data persists in MongoDB across page reloads.
+  - Optimistic UI updates.
+  - Delete confirmation dialog modal.
+  - Toast notifications.
+
+### Practical 7: Authentication and Middleware Pipeline
+- **User Authentication**:
+  - `User` schema in MongoDB with unique email and hashed password.
+  - Secure password hashing using **`bcryptjs`** with automatic salting.
+  - JWT token generation using **`jsonwebtoken`** on register and login with 1-hour expiration.
+  - Route protection middleware (`auth.js`) that verifies Bearer token from the `Authorization` header.
+  - Server-side input validation middleware (`validateTaskInput.js`) rejecting missing titles or invalid priorities before reaching database.
+  - Profile endpoint (`GET /auth/me`) returning decoded user information.
+- **Frontend Integration**:
+  - Token persistence via `localStorage` and automatic header injection in `src/api.js`.
+  - Sign In & Register modal UI with interactive tab switching and error display.
+  - Active session indicator and Logout mechanism.
+  - Automatic handling of 401 token expiration (clears invalid session and prompts login).
 
 ---
 
@@ -120,6 +135,7 @@ Ensure you have a `.env` file (copied from `.env.example`):
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/taskdb
+JWT_SECRET=supersecretjwtkey_24dit014_awdf_lab
 ```
 Start the server:
 ```bash

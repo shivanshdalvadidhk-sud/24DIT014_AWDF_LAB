@@ -17,6 +17,7 @@ mongoose
 const cors = require("cors");
 const logger = require("./middleware/logger");
 
+const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 
 const validateJson = require("./middleware/validateJson");
@@ -44,7 +45,10 @@ app.get("/", (req, res) => {
     res.send("Task Manager API is Running...");
 });
 
-// Task Routes
+// Authentication Routes (Practical 7)
+app.use("/auth", authRoutes);
+
+// Task Routes (Protected by Auth Middleware)
 app.use("/tasks", taskRoutes);
 
 // 404 Middleware
