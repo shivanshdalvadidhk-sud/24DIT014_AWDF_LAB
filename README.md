@@ -22,20 +22,21 @@ This monorepo is structured into two main applications, cleanly separating front
 │   │   │   ├── Skills.jsx              # Dynamic skills list via props (Practical 1)
 │   │   │   ├── Footer.jsx              # Contact & links (Practical 1)
 │   │   │   ├── NavBar.jsx              # React Router client navigation (Practical 2)
-│   │   │   ├── Spinner.jsx & .css      # Loading spinner component (Practical 3)
+│   │   │   ├── Spinner.jsx & .css      # Loading spinner component (Practical 3 & 8)
 │   │   │   ├── ErrorMessage.jsx & .css # Error state banner with retry button (Practical 3)
 │   │   │   ├── RepoCard.jsx & .css     # GitHub repository card display (Practical 3)
 │   │   │   ├── TaskCard.jsx & .css     # Task item card with edit, toggle, delete (Practical 6)
 │   │   │   ├── TaskForm.jsx & .css     # Task creation form (Practical 6)
 │   │   │   ├── Toast.jsx & .css        # Toast notifications for API actions (Practical 6)
 │   │   │   ├── ConfirmModal.jsx & .css # Delete confirmation modal dialog (Practical 6)
-│   │   │   └── AuthModal.jsx & .css    # JWT Sign In & Register modal (Practical 7)
+│   │   │   ├── AuthModal.jsx & .css    # JWT Sign In & Register modal (Practical 7)
+│   │   │   └── TaskAnalyticsChart.jsx  # Heavy Analytics Component lazy loaded (Practical 8)
 │   │   ├── pages/
-│   │   │   ├── Home.jsx                # Portfolio home page with composed components (Practical 1 & 2)
-│   │   │   ├── Projects.jsx & .css     # Full-Stack Task Manager (Practicals 6 & 7) + GitHub Repos (Practical 3)
-│   │   │   ├── Contact.jsx             # Controlled form with live character count (Practical 2)
-│   │   │   └── NotFound.jsx            # 404 custom error route (Practical 2)
-│   │   ├── App.jsx                     # Route definitions & global theme state (Practical 2)
+│   │   │   ├── Home.jsx                # Portfolio home page (Lazy loaded in Practical 8)
+│   │   │   ├── Projects.jsx & .css     # Full-Stack Task Manager (Lazy loaded in Practical 8)
+│   │   │   ├── Contact.jsx             # Controlled form (Lazy loaded in Practical 8)
+│   │   │   └── NotFound.jsx            # 404 custom error route (Lazy loaded in Practical 8)
+│   │   ├── App.jsx                     # Route definitions with React.lazy & Suspense (Practical 8)
 │   │   └── main.jsx                    # BrowserRouter root wrapper (Practical 2)
 │   ├── package.json
 │   └── README.md
@@ -99,24 +100,21 @@ This monorepo is structured into two main applications, cleanly separating front
 - Created central API service `src/api.js` in React frontend (`http://localhost:5000/tasks`).
 - Replaced GitHub API with real-time backend MongoDB task management.
 - Complete end-to-end CRUD flow (Create, Read, Update, Delete).
-- **Supplementary Implementations**:
-  - Optimistic UI updates.
-  - Delete confirmation dialog modal.
-  - Toast notifications.
+- **Supplementary Implementations**: Optimistic UI updates, delete confirmation dialog modal, toast notifications.
 
 ### Practical 7: Authentication and Middleware Pipeline
-- **User Authentication**:
-  - `User` schema in MongoDB with unique email and hashed password.
-  - Secure password hashing using **`bcryptjs`** with automatic salting.
-  - JWT token generation using **`jsonwebtoken`** on register and login with 1-hour expiration.
-  - Route protection middleware (`auth.js`) that verifies Bearer token from the `Authorization` header.
-  - Server-side input validation middleware (`validateTaskInput.js`) rejecting missing titles or invalid priorities before reaching database.
-  - Profile endpoint (`GET /auth/me`) returning decoded user information.
-- **Frontend Integration**:
-  - Token persistence via `localStorage` and automatic header injection in `src/api.js`.
-  - Sign In & Register modal UI with interactive tab switching and error display.
-  - Active session indicator and Logout mechanism.
-  - Automatic handling of 401 token expiration (clears invalid session and prompts login).
+- **User Authentication**: `User` schema in MongoDB, password hashing with `bcryptjs`, JWT token signing with `jsonwebtoken` on register and login with 1-hour expiration.
+- **Route Protection**: JWT auth middleware (`auth.js`), server-side input validation (`validateTaskInput.js`), profile endpoint (`GET /auth/me`).
+- **Frontend Integration**: Sign In / Register modal UI, persistent JWT session headers, 401 token expiration handling.
+
+### Practical 8: Performance Optimization and Lazy Loading in React
+- **Route-Based Code Splitting**: Implemented `React.lazy()` and `<Suspense>` in `App.jsx` for all page routes (`Home`, `Projects`, `Contact`, `NotFound`).
+- **Fallback UI**: Custom fallback loading state (`Spinner.jsx`) rendered during dynamic chunk fetching.
+- **Supplementary Problem**: Lazy loaded heavy analytics visualization component (`TaskAnalyticsChart.jsx`) on-demand when toggled by user.
+- **Bundle Metrics Optimization**:
+  - Baseline single bundle: `256.39 kB` JS.
+  - Optimized entry bundle: `235.00 kB` JS (*21.39 kB initial load reduction!*).
+  - Dynamic route & component chunks loaded on demand: `Projects` (20.67 kB), `TaskAnalyticsChart` (2.60 kB), `Home` (1.29 kB), `Contact` (0.71 kB), `NotFound` (0.33 kB).
 
 ---
 

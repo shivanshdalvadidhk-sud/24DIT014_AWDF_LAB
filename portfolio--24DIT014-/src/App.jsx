@@ -1,13 +1,16 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header.jsx'
 import NavBar from './components/NavBar.jsx'
-import Home from './pages/Home.jsx'
-import Projects from './pages/Projects.jsx'
-import Contact from './pages/Contact.jsx'
-import NotFound from './pages/NotFound.jsx'
 import Footer from './components/Footer.jsx'
+import Spinner from './components/Spinner.jsx'
 import './App.css'
+
+// Practical 8: Route-based Code Splitting using React.lazy()
+const Home = lazy(() => import('./pages/Home.jsx'))
+const Projects = lazy(() => import('./pages/Projects.jsx'))
+const Contact = lazy(() => import('./pages/Contact.jsx'))
+const NotFound = lazy(() => import('./pages/NotFound.jsx'))
 
 function App() {
   const [theme, setTheme] = useState('dark')
@@ -32,17 +35,20 @@ function App() {
       </button>
       <NavBar />
 
-      <Routes>
-        <Route path="/" element={<Home summary={summary} skillList={skillList} />} />
-        <Route path="/tasks" element={<Projects initialTab="tasks" />} />
-        <Route path="/projects" element={<Projects initialTab="tasks" />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<Spinner message="Loading page..." />}>
+        <Routes>
+          <Route path="/" element={<Home summary={summary} skillList={skillList} />} />
+          <Route path="/tasks" element={<Projects initialTab="tasks" />} />
+          <Route path="/projects" element={<Projects initialTab="tasks" />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
 
       <Footer email={email} linkedIn={linkedIn} />
     </div>
   )
 }
+
 
 export default App

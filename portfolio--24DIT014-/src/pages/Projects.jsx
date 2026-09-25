@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import Spinner from '../components/Spinner.jsx';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 import RepoCard from '../components/RepoCard.jsx';
@@ -19,11 +19,17 @@ import {
 } from '../api.js';
 import './Projects.css';
 
+// Practical 8 (Supplementary): Lazy load heavy component on-demand
+const TaskAnalyticsChart = lazy(() => import('../components/TaskAnalyticsChart.jsx'));
+
 const DEFAULT_GITHUB_USERNAME = 'shivanshdalvadidhk-sud';
 
 function Projects({ initialTab = 'tasks' }) {
   // Active tab: 'tasks' (Practical 6/7 Full Stack) or 'repos' (Practical 3 GitHub)
   const [activeTab, setActiveTab] = useState(initialTab);
+
+  // Practical 8 Supplementary: Toggle for lazy-loaded analytics component
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   // Authentication State (Practical 7)
   const [currentUser, setCurrentUser] = useState(() => getStoredUser());
@@ -391,7 +397,32 @@ function Projects({ initialTab = 'tasks' }) {
                 <div className="stat-item">Total Tasks: <strong>{totalTasks}</strong></div>
                 <div className="stat-item">Pending: <strong style={{ color: '#fbbf24' }}>{pendingTasks}</strong></div>
                 <div className="stat-item">Completed: <strong style={{ color: '#34d399' }}>{completedTasks}</strong></div>
+                <button
+                  type="button"
+                  className="btn-toggle-analytics"
+                  onClick={() => setShowAnalytics((prev) => !prev)}
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: '8px',
+                    background: showAnalytics ? '#9333ea' : '#1e293b',
+                    color: '#f8fafc',
+                    border: '1px solid #7e22ce',
+                    cursor: 'pointer',
+                    fontSize: '0.88rem',
+                    fontWeight: 500,
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {showAnalytics ? '📊 Hide Analytics' : '📊 Show Analytics (Lazy Load)'}
+                </button>
               </div>
+
+              {/* Practical 8 Supplementary: On-demand Lazy Loaded Component */}
+              {showAnalytics && (
+                <Suspense fallback={<Spinner message="Lazy loading Task Analytics chart component..." />}>
+                  <TaskAnalyticsChart tasks={tasks} />
+                </Suspense>
+              )}
 
               {/* Task Creation Form */}
               <TaskForm onAddTask={handleCreateTask} isSubmitting={isSubmitting} />
