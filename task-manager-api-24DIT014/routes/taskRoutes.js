@@ -11,7 +11,8 @@ const {
     getTaskById,
     createTask,
     updateTask,
-    deleteTask
+    deleteTask,
+    getCacheStatsHandler
 } = require("../controllers/taskController");
 
 // Protect all task routes with JWT authentication middleware (Practical 7)
@@ -19,6 +20,9 @@ router.use(auth);
 
 // GET all tasks
 router.get("/", getAllTasks);
+
+// GET cache stats debug endpoint (Supplementary Problem)
+router.get("/cache-stats", getCacheStatsHandler);
 
 // GET task by ID
 router.get("/:id", validateTaskId, getTaskById);
