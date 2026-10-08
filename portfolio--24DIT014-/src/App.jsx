@@ -6,7 +6,7 @@ import Footer from './components/Footer.jsx'
 import Spinner from './components/Spinner.jsx'
 import './App.css'
 
-// Practical 8: Route-based Code Splitting using React.lazy()
+
 const Home = lazy(() => import('./pages/Home.jsx'))
 const Projects = lazy(() => import('./pages/Projects.jsx'))
 const Contact = lazy(() => import('./pages/Contact.jsx'))

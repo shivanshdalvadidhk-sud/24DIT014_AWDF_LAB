@@ -19,23 +19,18 @@ import {
 } from '../api.js';
 import './Projects.css';
 
-// Practical 8 (Supplementary): Lazy load heavy component on-demand
 const TaskAnalyticsChart = lazy(() => import('../components/TaskAnalyticsChart.jsx'));
 
 const DEFAULT_GITHUB_USERNAME = 'shivanshdalvadidhk-sud';
 
 function Projects({ initialTab = 'tasks' }) {
-  // Active tab: 'tasks' (Practical 6/7 Full Stack) or 'repos' (Practical 3 GitHub)
   const [activeTab, setActiveTab] = useState(initialTab);
 
-  // Practical 8 Supplementary: Toggle for lazy-loaded analytics component
   const [showAnalytics, setShowAnalytics] = useState(false);
 
-  // Authentication State (Practical 7)
   const [currentUser, setCurrentUser] = useState(() => getStoredUser());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // --- Full Stack Task Manager State (Practical 6 & 7) ---
   const [tasks, setTasks] = useState([]);
   const [tasksLoading, setTasksLoading] = useState(false);
   const [tasksError, setTasksError] = useState(null);
@@ -43,10 +38,8 @@ function Projects({ initialTab = 'tasks' }) {
   const [taskSearch, setTaskSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'pending' | 'completed'
 
-  // Toast notification state
   const [toast, setToast] = useState({ message: '', type: 'info' });
 
-  // Delete confirmation modal state
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, task: null });
 
   const showToast = useCallback((message, type = 'info') => {
