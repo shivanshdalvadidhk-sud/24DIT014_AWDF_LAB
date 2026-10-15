@@ -26,6 +26,9 @@ const notFound = require("./middleware/notFound");
 
 const errorHandler = require("./middleware/errorHandler");
 
+// Register Event Listeners for Asynchronous Processing (Practical 10)
+require("./events/listeners");
+
 const app = express();
 
 const PORT = process.env.PORT || 5000;

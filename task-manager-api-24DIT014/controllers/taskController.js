@@ -1,5 +1,6 @@
 const Task = require("../models/Task");
 const { cache, recordHit, recordMiss, getStats } = require("../utils/cache");
+const taskEvents = require("../events/events");
 
 // Helper to invalidate all_tasks cache entries
 const invalidateAllTasksCache = () => {
@@ -75,7 +76,7 @@ const getTaskById = async (req, res, next) => {
     }
 };
 
-// POST /tasks (create task & invalidate cache)
+// POST /tasks (create task, respond immediately, and emit task-created event)
 const createTask = async (req, res, next) => {
     try {
         const taskData = { ...req.body };
@@ -87,7 +88,13 @@ const createTask = async (req, res, next) => {
         // Cache Invalidation
         invalidateAllTasksCache();
 
+        // Immediate API response with timestamp logging (Practical 10 Step 3)
+        const apiTimestamp = new Date().toISOString();
+        console.log(`[API] Response sent at ${apiTimestamp} for created task "${task.title}" (ID: ${task._id})`);
         res.status(201).json(task);
+
+        // Asynchronous event emission decoupled from request cycle
+        taskEvents.emit('task-created', task);
     } catch (err) {
         next(err);
     }
@@ -119,7 +126,7 @@ const updateTask = async (req, res, next) => {
     }
 };
 
-// DELETE /tasks/:id (delete task & invalidate cache)
+// DELETE /tasks/:id (delete task, respond immediately, and emit task-deleted event)
 const deleteTask = async (req, res, next) => {
     try {
         const task = await Task.findByIdAndDelete(req.params.id);
@@ -132,7 +139,13 @@ const deleteTask = async (req, res, next) => {
         invalidateAllTasksCache();
         cache.del(`task_${req.params.id}`);
 
+        // Immediate API response with timestamp logging (Supplementary Problem 1)
+        const apiTimestamp = new Date().toISOString();
+        console.log(`[API] Task deleted response sent at ${apiTimestamp} (Task ID: ${req.params.id})`);
         res.status(200).json({ message: "Task deleted successfully" });
+
+        // Asynchronous event emission decoupled from request cycle
+        taskEvents.emit('task-deleted', task);
     } catch (err) {
         next(err);
     }

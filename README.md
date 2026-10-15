@@ -1,4 +1,4 @@
-﻿# Advanced Web Development Frameworks (ITUE301) - Lab Work
+# Advanced Web Development Frameworks (ITUE301) - Lab Work
 
 **Student ID:** 24DIT014  
 **Subject:** Advanced Web Development Frameworks (ITUE301) | Semester 5  
@@ -44,13 +44,16 @@ This monorepo is structured into two main applications, cleanly separating front
 └── task-manager-api-24DIT014/          # Backend: Node.js + Express + MongoDB REST API
     ├── controllers/
     │   ├── authController.js           # Register, login, and /me controllers (Practical 7)
-    │   └── taskController.js           # CRUD controllers using Mongoose model (Practical 4 & 5)
+    │   └── taskController.js           # CRUD controllers with caching & event emitters (Practical 4, 5, 9, 10)
+    ├── events/
+    │   ├── events.js                   # Node.js EventEmitter singleton instance (Practical 10)
+    │   └── listeners.js                # Asynchronous background event listeners (Practical 10)
     ├── models/
     │   ├── User.js                     # User schema with hashed password (Practical 7)
     │   └── Task.js                     # Task schema with validation & hooks (Practical 5)
     ├── routes/
     │   ├── authRoutes.js               # Auth routes: /register, /login, /me (Practical 7)
-    │   └── taskRoutes.js               # Protected task routes with middleware (Practical 4, 5, 7)
+    │   └── taskRoutes.js               # Protected task routes with middleware & cache stats (Practical 4, 5, 7, 9)
     ├── middleware/
     │   ├── auth.js                     # JWT verification middleware (Practical 7)
     │   ├── validateTaskInput.js        # Server-side input validation middleware (Practical 7)
@@ -59,8 +62,13 @@ This monorepo is structured into two main applications, cleanly separating front
     │   ├── validateTaskId.js           # ObjectId format validator (Practical 4 & 5)
     │   ├── notFound.js                 # Structured 404 handler for unknown routes (Practical 4)
     │   └── errorHandler.js             # Centralized error handler for Mongoose/server errors (Practical 4 & 5)
+    ├── utils/
+    │   └── cache.js                    # In-memory caching engine using node-cache (Practical 9)
+    ├── scripts/
+    │   ├── test_practical9.js          # Automated caching benchmark verification script (Practical 9)
+    │   └── test_practical10.js         # Automated async EventEmitter verification script (Practical 10)
     ├── .env.example                    # Template environment variables
-    ├── server.js                       # Express app with CORS & Auth enabled (Practical 4, 5, 6, 7)
+    ├── server.js                       # Express app with CORS, Auth & Event Listeners (Practical 4-7, 9, 10)
     ├── package.json
     └── README.md
 ```
@@ -115,6 +123,22 @@ This monorepo is structured into two main applications, cleanly separating front
   - Baseline single bundle: `256.39 kB` JS.
   - Optimized entry bundle: `235.00 kB` JS (*21.39 kB initial load reduction!*).
   - Dynamic route & component chunks loaded on demand: `Projects` (20.67 kB), `TaskAnalyticsChart` (2.60 kB), `Home` (1.29 kB), `Contact` (0.71 kB), `NotFound` (0.33 kB).
+
+### Practical 9: In-Memory Caching and Query Optimization
+- Server-side in-memory caching engine using `node-cache` (TTL = 60s).
+- Cached `GET /tasks` and `GET /tasks/:id` to reduce MongoDB query latency from ~14.8 ms to ~2.8 ms (over 5x speedup).
+- Strict cache invalidation on write operations (`POST`, `PUT`, `DELETE`).
+- Added response headers (`X-Cache: HIT` / `X-Cache: MISS`) and debug endpoint (`GET /tasks/cache-stats`).
+
+### Practical 10: Asynchronous Processing with Event-Driven Architecture
+- Asynchronous background processing using Node.js native `EventEmitter` (`events` module) without external message broker dependencies.
+- Decoupled notification dispatch and side-effect processing from the HTTP request-response cycle.
+- Emitted `'task-created'` event immediately after saving task and responding with HTTP `201 Created` (~9.7 ms response time).
+- Simulated slow background notifications (2-second non-blocking delay) completing in the background without holding up client response.
+- **Supplementary Implementations**:
+  - `'task-deleted'` custom event listener with asynchronous cleanup logging.
+  - Centralized `'error'` event listener to catch asynchronous listener errors and prevent unhandled exception crashes.
+  - Empirical verification script logging timestamps demonstrating non-blocking execution order.
 
 ---
 
