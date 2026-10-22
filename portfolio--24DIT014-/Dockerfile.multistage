@@ -1,0 +1,21 @@
+# ==============================================================================
+# Supplementary Problem 2: Production Multi-Stage Dockerfile (Node.js + Nginx)
+# Drastically reduces image footprint from ~1GB down to ~25MB
+# ==============================================================================
+
+# Stage 1: Build static React production bundle
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Stage 2: Serve static production assets via high-performance Nginx server
+FROM nginx:alpine
+# Copy compiled bundle from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
+# Expose HTTP port
+EXPOSE 80
+# Run Nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]

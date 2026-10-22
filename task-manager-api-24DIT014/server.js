@@ -4,13 +4,15 @@ const mongoose = require("mongoose");
 
 const express = require("express");
 
+const MONGO_URI = process.env.MONGO_URI || "mongodb://mongodb:27017/taskdb";
+
 mongoose
-    .connect(process.env.MONGO_URI)
+    .connect(MONGO_URI)
     .then(() => {
         console.log("MongoDB Connected");
     })
     .catch((err) => {
-        console.log(err);
+        console.log("MongoDB connection error:", err);
     });
 
 

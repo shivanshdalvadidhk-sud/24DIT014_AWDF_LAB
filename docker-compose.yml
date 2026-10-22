@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # 1. MongoDB Database Service
+  # ============================================================================
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_task_app
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      # Named persistent volume to retain task data across container restarts
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+  # ============================================================================
+  # 2. Node.js / Express Backend API Service
+  # ============================================================================
+  backend:
+    build:
+      context: ./task-manager-api-24DIT014
+      dockerfile: Dockerfile
+    container_name: backend_task_app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongodb:27017/taskdb
+      - JWT_SECRET=supersecretjwtkey_24dit014_awdf_lab
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  # ============================================================================
+  # 3. React + Vite Frontend Client Service
+  # ============================================================================
+  frontend:
+    build:
+      context: ./portfolio--24DIT014-
+      dockerfile: Dockerfile
+    container_name: frontend_task_app
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+# ==============================================================================
+# Persistent Named Volumes Definition (Supplementary Problem 3)
+# ==============================================================================
+volumes:
+  mongo-data:
+    driver: local
+
+# ==============================================================================
+# Custom Bridge Network for Inter-Container Service Discovery
+# ==============================================================================
+networks:
+  app-network:
+    driver: bridge
