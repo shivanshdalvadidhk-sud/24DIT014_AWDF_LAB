@@ -6,14 +6,16 @@ const express = require("express");
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://mongodb:27017/taskdb";
 
-mongoose
-    .connect(MONGO_URI)
-    .then(() => {
-        console.log("MongoDB Connected");
-    })
-    .catch((err) => {
-        console.log("MongoDB connection error:", err);
-    });
+if (process.env.NODE_ENV !== "test") {
+    mongoose
+        .connect(MONGO_URI)
+        .then(() => {
+            console.log("MongoDB Connected");
+        })
+        .catch((err) => {
+            console.log("MongoDB connection error:", err);
+        });
+}
 
 
 const cors = require("cors");
@@ -63,7 +65,11 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Start Server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
 

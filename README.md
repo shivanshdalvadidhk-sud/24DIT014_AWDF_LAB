@@ -4,6 +4,8 @@
 **Subject:** Advanced Web Development Frameworks (ITUE301) | Semester 5  
 **Institution:** Chandubhai S Patel Institute of Technology (CSPIT) / DEPSTAR, CHARUSAT  
 
+[![CI Pipeline](https://github.com/shivanshdalvadidhk-sud/24DIT014_AWDF_LAB/actions/workflows/ci.yml/badge.svg)](https://github.com/shivanshdalvadidhk-sud/24DIT014_AWDF_LAB/actions/workflows/ci.yml)
+
 ---
 
 ## Repository Structure

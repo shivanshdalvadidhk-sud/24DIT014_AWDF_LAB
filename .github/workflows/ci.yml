@@ -1,0 +1,55 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job 1: Code Quality & Linting (Supplementary Problem 1)
+  lint:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: './portfolio--24DIT014-/package-lock.json'
+
+      - name: Install Frontend Dependencies
+        working-directory: ./portfolio--24DIT014-
+        run: npm install
+
+      - name: Run ESLint Linter
+        working-directory: ./portfolio--24DIT014-
+        run: npm run lint
+
+  # Job 2: Build & Automated Tests (depends on lint job)
+  build-and-test:
+    name: Build & Automated Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: './task-manager-api-24DIT014/package-lock.json'
+
+      - name: Install Backend Dependencies
+        working-directory: ./task-manager-api-24DIT014
+        run: npm install
+
+      - name: Run Automated API Tests with Jest
+        working-directory: ./task-manager-api-24DIT014
+        run: npm test
